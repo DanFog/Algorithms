@@ -73,6 +73,13 @@ var z = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function fillArray(a, value) {
   // fill it
+  if(!value) {
+    value = 0;
+  }
+  for (var i = 0; i < a.length;i++){
+    a[i] = value;
+  }
+  return a;
 }
 
 console.log("zero(z): " + (fillArray(z).equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])));
@@ -85,6 +92,11 @@ var a = [1, 2, 3, 4, 5, 6, 7, 8];
 
 function sum(a) {
   // Return sum
+  var sum = 0;
+  for(var i = 0; i < a.length; i++) {
+    sum = sum + a[i];
+  }
+  return sum;
 }
 
 console.log("sum(a): " + (sum(a) === 36));
@@ -95,6 +107,12 @@ var a1 = [23, 17, 23, 42, 8, 2, 73, 101, 83, 92];
 
 function average(a) {
   // return average
+  var sum = 0;
+  for(var i = 0; i < a.length; i++) {
+    sum = sum + a[i];
+  }
+  var average = sum/a.length;
+  return average;
 }
 
 console.log("average(a1): " + (average(a1) === 46.4));
@@ -107,6 +125,11 @@ var a3 = [4,5,9,10,11,15,22,20,21,21];
 
 function median(a) {
   // return median
+  if (a.length%2 != 0){
+    return a[(a.length - 1)/2];
+  }else{
+    return (a[a.length/2]+ a[a.length/2-1])/2
+  }
 }
 
 console.log("median(a2): " + (median(a2) === 6));
@@ -119,6 +142,12 @@ var a4 = ["zero", "one", "two", "three", "four", "five"];
 
 function findIndex(a, value) {
   // return index or null
+  for (var i = 0; i < a.length; i++){
+    if (a[i] === value){
+      return i;
+    }
+  }
+  return null;
 }
 
 console.log("findIndex('three'): " + (findIndex(a4, "three") === 3));
@@ -131,6 +160,16 @@ var a5 = [4, 3, 8, 8, 6, 9, 10, 12, 10, 9, 0, 5, 16, 2];
 function findNthLastOdd(a, n) {
   // return nth last add
   //
+  var odd_counter = 0;
+  for (var i = a.length-1; i >= 0; i--){
+    if (a[i]%2 != 0){
+      odd_counter++;
+      if (odd_counter == n){
+        return i;
+      }
+    }
+  }
+  return null;
 }
 
 console.log("findNthLastOdd(a5, 1): " + (findNthLastOdd(a5, 1) === 11));
@@ -144,6 +183,11 @@ var a6 = [0, 1, 2, 3, 4, 5, 10, 15, 23, 54, 22, 1, 8, 4, 2, 2, 2, 0, 1];
 
 function getAverageOfRange(a, start, end) {
   // return average of values selected from a subarray
+  var newArray=[];
+  for (var i = start; i <= end; i++){
+    newArray[i-start] = a[i];
+  }
+  return average(newArray);
 }
 
 console.log("getAverageOfRange(a6, 5, 9): " + (getAverageOfRange(a6, 5, 9) === 21.4));

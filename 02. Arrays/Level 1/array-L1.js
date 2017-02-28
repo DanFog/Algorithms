@@ -198,7 +198,10 @@ var a7 = [0, 10, 20, 30, 35, 55, 75, 100];
 var b7 = [];
 
 function copyArray(source, target) {
-  // return copy
+  for(var i = 0; i < source.length; i++) {
+    target.push(source[i]);
+  }
+  return target;
 }
 
 console.log("copyArray...");
@@ -212,7 +215,10 @@ console.log("  b7 should be same as a7: " + (b7.equals(a7)));
 var a8 = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
 
 function swap(a, indexSource, indexTarget) {
-  // swap 'em
+  var holder = a[indexSource];
+  a[indexSource] = a[indexTarget];
+  a[indexTarget] = holder;
+  return a;
 }
 
 console.log("swap...");

@@ -17,9 +17,25 @@
 
 var Vector = function(initialCapacity, maxCapacity) {
   this.storage = [];
-  this.capacity = 16;  // Default to array size 16
-  this.max = 1 << 24;      // Default to max Vector size 16,777,216
+  this.capacity = initialCapacity || 16;  // Default to array size 16
+  this.max = maxCapacity || 1 << 24;      // Default to max Vector size 16,777,216
   this.length = 0;
+};
+
+Vector.prototype.checkCapacityUpper = function(){
+  if(this.length + 1 > this.max){
+    console.log('error! exceeded maximum memory usage');
+    return false;
+  }else if (this.length + 1 > this.capacity){
+    this.capacity *= 2;
+  }
+  return true;
+};
+
+Vector.prototype.checkCapacityLower = function(){
+  if(this.capacity > 16 && this.length - 1 <= this.capacity/4){
+    this.capacity = this.capacity/2;
+  }
 };
 
 Vector.prototype.checkBounds = function(index){
@@ -31,7 +47,7 @@ Vector.prototype.checkBounds = function(index){
 };
 
 Vector.prototype.insert = function(index, value) {
-  if (!this.checkBounds(index)) {
+  if (!this.checkBounds(index) || !this.checkCapacityUpper()){
     return;
   }
   var newArray = [];
@@ -48,6 +64,9 @@ Vector.prototype.insert = function(index, value) {
 };
 
 Vector.prototype.add = function(value) {
+  if (!this.checkCapacityUpper()){
+      return;
+  }
   if (this.storage.length){
     this.storage[this.storage.length] = value;
   }
@@ -60,9 +79,9 @@ Vector.prototype.add = function(value) {
 
 Vector.prototype.remove = function(index) {
   if (!this.checkBounds(index)){
-    return;
+      return;
   }
-
+  this.checkCapacityLower();
   for (var i = index; i < this.storage.length; i++ ){
     this.storage[i] = this.storage[i+1];
   }
@@ -77,81 +96,16 @@ Vector.prototype.remove = function(index) {
 
 Vector.prototype.get = function(index) {
   if (!this.checkBounds(index)){
-    return;
+      return;
   }
   return this.storage[index];
 };
 
 Vector.prototype.set = function(index, value) {
   if (!this.checkBounds(index)){
-    return;
+      return;
   }
   if (index < this.storage.length && index > 0){
     this.storage[index] = value;
   }
 };
-
-var v = new Vector();
-
-console.log("Initialize");
-console.log("  v.length should be 0: " + (v.length === 0));
-console.log("  v.capacity should be 8: " + (v.capacity === 8));
-console.log("  v.max should be 32: " + (v.max === 32));
-console.log("  v.storage should be [undefined, ... x8]: " + (v.storage.length === v.capacity));
-
-console.log("Add 3");
-v.add(0);
-v.add(1);
-v.add(2);
-console.log("  v.length should be 3: " + (v.length === 3));
-console.log("  v.toArray() should be [0, 1, 2]: " + (v.toArray().equals([0, 1, 2])));
-
-console.log("Add 2 more");
-v.add(3);
-v.add(4);
-console.log("  v.length should be 5: " + (v.length === 5));
-console.log("  v.toArray() should be [0, 1, 2, 3, 4]: " + (v.toArray().equals([0, 1, 2, 3, 4])));
-
-console.log("Insert 1 at v[3]");
-v.insert(3, 2.5);
-console.log("  v.length should be 6: " + (v.length === 6));
-console.log("  v.toArray() should be [0, 1, 2, 2.5, 3, 4]: " + (v.toArray().equals([0, 1, 2, 2.5, 3, 4])));
-
-console.log("Remove v[3]");
-v.remove(3);
-console.log("  v.length should be 5: " + (v.length === 5));
-console.log("  v.toArray() should be [0, 1, 2, 3, 4]: " + (v.toArray().equals([0, 1, 2, 3, 4])));
-
-console.log("Set v[2] = 15");
-v.set(2, 15);
-console.log("  v.get(2) should be 15: " + (v.get(2) === 15));
-
-console.log("Add 4 more");
-v.add(5);
-v.add(6);
-v.add(7);
-v.add(8);
-console.log("  v.length should be 9: " + (v.length === 9));
-console.log("  v.capacity should be 16: " + (v.capacity === 16));
-
-console.log("Remove from the end");
-v.remove();
-console.log("  v.toArray() should be [0, 1, 15, 3, 4, 5, 6, 7]: " + (v.toArray().equals([0, 1, 15, 3, 4, 5, 6, 7])));
-
-console.log("Remove v[2]");
-v.remove(2);
-console.log("  v.toArray() should be [0, 1, 3, 4, 5, 6, 7]: " + (v.toArray().equals([0, 1, 3, 4, 5, 6, 7])));
-
-console.log("Remove the first");
-v.remove(0);
-console.log("  v.toArray() should be [1, 3, 4, 5, 6, 7]: " + (v.toArray().equals([1, 3, 4, 5, 6, 7])));
-console.log("  v.length should be 6: " + (v.length === 6));
-console.log("  v.capacity should be 8: " + (v.capacity === 16));
-
-console.log("Insert one at the beginning");
-v.insert(0, 0);
-console.log("  Insert 0 at v[0] should be [0, 1, 3, 4, 5, 6, 7]: " + (v.toArray().equals([0, 1, 3, 4, 5, 6, 7])));
-
-console.log("Remove from beginning");
-v.remove(0);
-console.log("  v.remove(0) should be [1, 3, 4, 5, 6, 7]: " + v.toArray().equals([1, 3, 4, 5, 6, 7]));

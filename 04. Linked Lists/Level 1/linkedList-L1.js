@@ -132,12 +132,6 @@ function toArray(fromWhichNode) {
   return result;
 }
 
-
-
-
-
-
-
 var test_result = false;
 
 console.log("Preliminaries");
